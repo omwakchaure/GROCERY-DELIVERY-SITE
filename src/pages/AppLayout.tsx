@@ -1,10 +1,15 @@
+import { Outlet } from "react-router-dom"
 
 
 const AppLayout = () => {
   return (
-    <div>
-      
-    </div>
+    <>
+     <p>banner</p>
+     <p>header</p> 
+     <main className="min-h-screen"><Outlet /></main>
+     <p>footer</p>
+     <p>Cartscrollbar</p>
+    </>
   )
 }
 
