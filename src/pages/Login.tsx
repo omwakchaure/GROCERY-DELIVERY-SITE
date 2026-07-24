@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { heroSectionData } from "../assets/assets";
 import { Link } from "react-router-dom";
-import { BikeIcon, UserIcon } from "lucide-react";
+import { BikeIcon, Loader2Icon, LockIcon, UserIcon } from "lucide-react";
 
 const Login = () => {
   const [isLoginState, setIsLoginState] = useState(true);
@@ -105,6 +105,34 @@ const Login = () => {
                 />
               </div>
             </label>
+            <label className="text-sm flex flex-col gap-1">
+              Password
+              <div className="relative">
+                <LockIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-app-text-light" />
+
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                  className="w-full pl-11 pr-4 py-3 text-sm bg-white rounded-xl border not-focus:border-app-border transition-all"
+                />
+              </div>
+            </label>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-center w-full py-3 bg-green-950 text-white font-semibold rounded-xl hover:bg-green-900 transition-colors disabled:opacity-50"
+            >
+              {loading ? (
+                <Loader2Icon className="animate-spin" />
+              ) : isLoginState ? (
+                "Sign In"
+              ) : (
+                "Sign Up"
+              )}
+            </button>
           </form>
         </div>
       </div>
