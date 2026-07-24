@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import SerachResults from "./pages/SerachResults";
 import FlashDeals from "./pages/FlashDeals";
-import ProductDetail from "./pages/productDetail";
+import ProductDetail from "./pages/ProductDetail";
 import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
 import OrderTracking from "./pages/OrderTracking";
