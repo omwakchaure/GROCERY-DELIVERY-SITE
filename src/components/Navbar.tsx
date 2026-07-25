@@ -12,8 +12,8 @@ import {
   UserIcon,
   XIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, type FormEvent } from "react";
 
 const Navbar = () => {
   const user: any = {
@@ -29,6 +29,17 @@ const Navbar = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const query = searchQuery.trim();
+    if (!query) return;
+
+    navigate(`/search?q=${encodeURIComponent(query)}`);
+    setSearchQuery("");
+  };
 
   return (
     <nav className="bg-white sticky top-0 z-50 border-b border-app-border">
@@ -52,7 +63,10 @@ const Navbar = () => {
           </div>
 
           {/* Search */}
-          <form className="hidden sm:flex flex-1 max-w-sm text-xs sm:text-sm">
+          <form
+            className="hidden sm:flex flex-1 max-w-sm text-xs sm:text-sm"
+            onSubmit={handleSearch}
+          >
             <div className="relative w-full">
               <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-zinc-500" />
 
