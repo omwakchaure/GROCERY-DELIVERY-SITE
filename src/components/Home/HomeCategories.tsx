@@ -27,6 +27,7 @@ const HomeCategories = () => {
                   className="w-full h-full object-contain rounded-full transition-all group-hover:scale-110"
                 />
               </div>
+              <span className="text-xs font-medium text-zinc-600 test-center leading-tight">{cat.name}</span>
             </Link>
           ))}
         </div>
