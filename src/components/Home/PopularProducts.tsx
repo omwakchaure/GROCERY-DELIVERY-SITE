@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { Product } from "../../types";
 import { dummyProducts } from "../../assets/assets";
 import { Link } from "react-router-dom";
+import { ArrowRightIcon } from "lucide-react";
+import ProductCard from "../ProductCard";
 
 const PopularProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,12 +23,21 @@ const PopularProducts = () => {
             </p>
           </div>
 
-          <Link to="/products">
+          <Link
+            to="/products"
+            className="text-sm font-semibold text-app-orange hover:text-app-orange-dark flex items-center gap-1 transition-colors"
+          >
             View All
+            <ArrowRightIcon className="size-4" />
           </Link>
         </div>
 
         {/* Products will be rendered here */}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-8">
+        {products.map((product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
       </div>
     </section>
   );
