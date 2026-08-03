@@ -10,6 +10,6 @@ createRoot(document.getElementById('root')!).render(
   <CartProvider >
     <App />
     </CartProvider>
-    // adding
+   
   </BrowserRouter>,
 )  
