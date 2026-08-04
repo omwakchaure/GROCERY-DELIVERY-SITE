@@ -30,7 +30,7 @@ const CartSidebar = () => {
 
   return (
     <>
-      {/* Overlay */}
+      
       <div
         onClick={() => setIsCartOpen(false)}
         className="fixed inset-0 bg-black/40 z-50 transition-opacity"
