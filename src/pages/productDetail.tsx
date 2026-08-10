@@ -3,7 +3,14 @@ import { useCart } from "../context/CartContext";
 import { useEffect, useState } from "react";
 import type { Product } from "../types";
 import { dummyProducts } from "../assets/assets";
-import { ArrowLeftIcon, HomeIcon, LeafIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  HomeIcon,
+  LeafIcon,
+  MinusIcon,
+  PlusIcon,
+  ShoppingCartIcon,
+} from "lucide-react";
 import Loading from "../components/Loading";
 
 const ProductDetail = () => {
@@ -12,12 +19,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const {
-    items,
-    addToCart,
-    updateQuantity,
-    removeFromCart,
-  } = useCart();
+  const { items, addToCart, updateQuantity, removeFromCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -29,15 +31,11 @@ const ProductDetail = () => {
     setLocalQuantity(1);
     window.scrollTo(0, 0);
 
-    const foundProduct = dummyProducts.find(
-      (p) => p._id === id
-    );
+    const foundProduct = dummyProducts.find((p) => p._id === id);
 
     setProduct(foundProduct || null);
 
-    setRelatedProducts(
-      dummyProducts.filter((p) => p._id !== id)
-    );
+    setRelatedProducts(dummyProducts.filter((p) => p._id !== id));
 
     setLoading(false);
   }, [id]);
@@ -48,7 +46,7 @@ const ProductDetail = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex-center">
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-app-text mb-4">
             Product not found
@@ -65,29 +63,43 @@ const ProductDetail = () => {
     );
   }
 
-  const cartItem = items.find(
-    (item) => item.product._id === product._id
-  );
+const cartItem = items.find(
+  (item) => item.product._id === product._id
+);
+ const categoryLabel = product.category.replace(/-/g, " ");
 
-  const inCart = !!cartItem;
+const inCart = !!cartItem;
 
-  const displayQuantity = inCart
-    ? cartItem.quantity
-    : localQuantity;
+const displayQuantity = inCart
+  ? cartItem.quantity
+  : localQuantity;
 
-  const categoryLabel = product.category.replace(/-/g, " ");
+const handleMinus = () => {
+  if (inCart) {
+    if (cartItem.quantity > 1)
+      updateQuantity(product._id, cartItem.quantity - 1);
+    else removeFromCart(product._id);
+  } else {
+    setLocalQuantity(Math.max(1, localQuantity - 1));
+  }
+};
+
+const handlePlus = () => {
+  if (inCart)
+    updateQuantity(product._id, cartItem.quantity + 1);
+  else setLocalQuantity(localQuantity + 1);
+};
 
   return (
-    <div className="min-h-screen">
-
+    <div className="max-w-7xl mx-auto px-4 py-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-app-text-light mb-6">
-
         <Link
           to="/"
-          className="hover:text-app-green transition-colors"
+          className="hover:text-app-green transition-colors flex items-center gap-1"
         >
           <HomeIcon className="size-4" />
+          Home
         </Link>
 
         <span>/</span>
@@ -113,7 +125,6 @@ const ProductDetail = () => {
         <span className="text-app-green font-medium truncate max-w-[200px]">
           {product.name}
         </span>
-
       </nav>
 
       {/* Back button */}
@@ -127,12 +138,10 @@ const ProductDetail = () => {
 
       {/* Product Details Section */}
       <div className="bg-white/50 rounded-2xl overflow-hidden">
-
         <div className="grid md:grid-cols-2 gap-0">
 
           {/* Left side - Image */}
           <div className="relative flex-center p-8 md:p-12 min-h-[320px] md:min-h-[480px]">
-
             <img
               src={product.image}
               alt={product.name}
@@ -156,7 +165,6 @@ const ProductDetail = () => {
                   {product.discount}% OFF
                 </span>
               )}
-
             </div>
           </div>
 
@@ -173,134 +181,100 @@ const ProductDetail = () => {
               {product.name}
             </h1>
 
-            {/* Product Price */}
-            <div className="flex items-center gap-3 mb-4">
-
-              <span className="text-2xl font-bold text-app-green">
+            {/* Price */}
+            <div className="flex items-baseline gap-3 mb-5">
+              <span className="text-3xl md:text-4xl font-semibold text-app-green">
                 {currency}
-                {product.price}
+                {product.price.toFixed(2)}
               </span>
 
-              {product.discount > 0 && (
-                <span className="text-sm text-app-text-light line-through">
+              {product.originalPrice > product.price && (
+                <span className="text-lg text-app-text-light line-through">
                   {currency}
-                  {(
-                    product.price /
-                    (1 - product.discount / 100)
-                  ).toFixed(2)}
+                  {product.originalPrice.toFixed(2)}
                 </span>
               )}
-
             </div>
 
-            {/* Product Description */}
-            <p className="text-sm text-app-text-light leading-6 mb-6">
+            {/* Description */}
+            <p className="text-sm text-app-text-light leading-relaxed mb-6">
               {product.description}
             </p>
 
-            {/* Quantity */}
+            {/* Stock */}
             <div className="mb-6">
+              {product.stock > 0 ? (
+                <span className="text-sm text-app-success font-medium">
+                  ✓ In Stock ({product.stock} available)
+                </span>
+              ) : (
+                <span className="text-sm text-app-error font-medium">
+                  Out of Stock
+                </span>
+              )}
+            </div>
 
-              <p className="text-sm font-medium text-app-text mb-2">
-                Quantity
-              </p>
+            {/* Quantity + Add to Cart */}
+            <div className="flex items-center gap-3">
 
-              <div className="flex items-center gap-3">
+              {/* Quantity */}
+              <div className="flex items-center border border-app-border rounded-xl overflow-hidden">
 
-                {/* Decrease */}
+                {/* Minus */}
                 <button
-                  type="button"
-                  onClick={() => {
-                    if (displayQuantity <= 1) return;
-
-                    if (inCart) {
-                      updateQuantity(
-                        product._id,
-                        displayQuantity - 1
-                      );
-                    } else {
-                      setLocalQuantity(
-                        displayQuantity - 1
-                      );
-                    }
-                  }}
-                  className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:border-app-green hover:text-app-green transition-colors"
+                  onClick={handleMinus}
+                  disabled={displayQuantity <= 1}
+                  className="p-3 hover:bg-app-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  -
+                  <MinusIcon className="w-4 h-4" />
                 </button>
 
-                {/* Quantity */}
-                <span className="w-8 text-center font-medium">
+                {/* Quantity Number */}
+                <span className="px-5 text-sm font-semibold min-w-[40px] text-center">
                   {displayQuantity}
                 </span>
 
-                {/* Increase */}
+                {/* Plus */}
                 <button
-                  type="button"
-                  onClick={() => {
-                    if (inCart) {
-                      updateQuantity(
-                        product._id,
-                        displayQuantity + 1
-                      );
-                    } else {
-                      setLocalQuantity(
-                        displayQuantity + 1
-                      );
-                    }
-                  }}
-                  className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:border-app-green hover:text-app-green transition-colors"
+                  onClick={handlePlus}
+                  disabled={
+                    product.stock === 0 ||
+                    displayQuantity >= product.stock
+                  }
+                  className="p-3 hover:bg-app-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  +
+                  <PlusIcon className="w-4 h-4" />
                 </button>
-
               </div>
+
+              {/* Add to Cart */}
+              <button
+                onClick={() => {
+                  if (!inCart) {
+                    addToCart(product, localQuantity);
+                  }
+                }}
+                disabled={product.stock === 0}
+                className={`flex-1 py-3 font-semibold rounded-xl transition-colors flex-center gap-2
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  active:scale-[0.98]
+                  ${
+                    inCart
+                      ? "bg-app-cream text-app-green border border-app-green"
+                      : "bg-app-orange text-white hover:bg-app-orange-dark"
+                  }`}
+              >
+                <ShoppingCartIcon className="w-4 h-4" />
+
+                {inCart ? "Added to Cart" : "Add to Cart"}
+              </button>
             </div>
-
-            {/* Cart Actions */}
-            <div className="flex gap-3">
-
-              {!inCart ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    addToCart(product);
-                  }}
-                  className="flex-1 bg-app-green text-white py-3 px-6 rounded-xl font-medium hover:opacity-90 transition-opacity"
-                >
-                  Add to Cart
-                </button>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      removeFromCart(product._id);
-                    }}
-                    className="flex-1 border border-red-500 text-red-500 py-3 px-6 rounded-xl font-medium hover:bg-red-50 transition-colors"
-                  >
-                    Remove from Cart
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => navigate("/cart")}
-                    className="flex-1 bg-app-green text-white py-3 px-6 rounded-xl font-medium hover:opacity-90 transition-opacity"
-                  >
-                    Go to Cart
-                  </button>
-                </>
-              )}
-
-            </div>
-
           </div>
         </div>
       </div>
 
       {/* Customer Reviews */}
       <section className="mt-10">
-
         <h2 className="text-xl font-semibold text-app-text mb-4">
           Customer Reviews
         </h2>
@@ -310,26 +284,22 @@ const ProductDetail = () => {
             No reviews yet.
           </p>
         </div>
-
       </section>
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section className="mt-12">
-
           <h2 className="text-2xl font-semibold text-app-text mb-6">
             Related Products
           </h2>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-
             {relatedProducts.slice(0, 4).map((relatedProduct) => (
               <Link
                 key={relatedProduct._id}
                 to={`/products/${relatedProduct._id}`}
                 className="bg-white rounded-xl p-4 hover:shadow-md transition-shadow"
               >
-
                 <div className="h-40 flex items-center justify-center mb-4">
                   <img
                     src={relatedProduct.image}
@@ -343,20 +313,13 @@ const ProductDetail = () => {
                 </h3>
 
                 <p className="text-sm text-app-text-light capitalize mt-1">
-                  {relatedProduct.category.replace(
-                    /-/g,
-                    " "
-                  )}
+                  {relatedProduct.category.replace(/-/g, " ")}
                 </p>
-
               </Link>
             ))}
-
           </div>
-
         </section>
       )}
-
     </div>
   );
 };
