@@ -63,32 +63,27 @@ const ProductDetail = () => {
     );
   }
 
-const cartItem = items.find(
-  (item) => item.product._id === product._id
-);
- const categoryLabel = product.category.replace(/-/g, " ");
+  const cartItem = items.find((item) => item.product._id === product._id);
+  const categoryLabel = product.category.replace(/-/g, " ");
 
-const inCart = !!cartItem;
+  const inCart = !!cartItem;
 
-const displayQuantity = inCart
-  ? cartItem.quantity
-  : localQuantity;
+  const displayQuantity = inCart ? cartItem.quantity : localQuantity;
 
-const handleMinus = () => {
-  if (inCart) {
-    if (cartItem.quantity > 1)
-      updateQuantity(product._id, cartItem.quantity - 1);
-    else removeFromCart(product._id);
-  } else {
-    setLocalQuantity(Math.max(1, localQuantity - 1));
-  }
-};
+  const handleMinus = () => {
+    if (inCart) {
+      if (cartItem.quantity > 1)
+        updateQuantity(product._id, cartItem.quantity - 1);
+      else removeFromCart(product._id);
+    } else {
+      setLocalQuantity(Math.max(1, localQuantity - 1));
+    }
+  };
 
-const handlePlus = () => {
-  if (inCart)
-    updateQuantity(product._id, cartItem.quantity + 1);
-  else setLocalQuantity(localQuantity + 1);
-};
+  const handlePlus = () => {
+    if (inCart) updateQuantity(product._id, cartItem.quantity + 1);
+    else setLocalQuantity(localQuantity + 1);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -104,10 +99,7 @@ const handlePlus = () => {
 
         <span>/</span>
 
-        <Link
-          to="/products"
-          className="hover:text-app-green transition-colors"
-        >
+        <Link to="/products" className="hover:text-app-green transition-colors">
           Products
         </Link>
 
@@ -139,7 +131,6 @@ const handlePlus = () => {
       {/* Product Details Section */}
       <div className="bg-white/50 rounded-2xl overflow-hidden">
         <div className="grid md:grid-cols-2 gap-0">
-
           {/* Left side - Image */}
           <div className="relative flex-center p-8 md:p-12 min-h-[320px] md:min-h-[480px]">
             <img
@@ -150,7 +141,6 @@ const handlePlus = () => {
 
             {/* Badges */}
             <div className="absolute top-5 left-5 flex flex-wrap gap-1.5">
-
               {/* Organic Badge */}
               {product.isOrganic && (
                 <span className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold bg-app-green text-white rounded-full">
@@ -170,7 +160,6 @@ const handlePlus = () => {
 
           {/* Right side - Details */}
           <div className="p-6 md:p-10 flex flex-col justify-center">
-
             {/* Category */}
             <p className="text-sm text-app-green font-medium capitalize mb-2">
               {categoryLabel}
@@ -214,12 +203,10 @@ const handlePlus = () => {
               )}
             </div>
 
-            {/* Quantity + Add to Cart */}
+            {/* Quantity + Add to  */}
             <div className="flex items-center gap-3">
-
               {/* Quantity */}
               <div className="flex items-center border border-app-border rounded-xl overflow-hidden">
-
                 {/* Minus */}
                 <button
                   onClick={handleMinus}
@@ -234,12 +221,10 @@ const handlePlus = () => {
                   {displayQuantity}
                 </span>
 
-                {/* Plus */}
                 <button
                   onClick={handlePlus}
                   disabled={
-                    product.stock === 0 ||
-                    displayQuantity >= product.stock
+                    product.stock === 0 || displayQuantity >= product.stock
                   }
                   className="p-3 hover:bg-app-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -280,9 +265,7 @@ const handlePlus = () => {
         </h2>
 
         <div className="bg-white/50 rounded-xl p-6">
-          <p className="text-sm text-app-text-light">
-            No reviews yet.
-          </p>
+          <p className="text-sm text-app-text-light">No reviews yet.</p>
         </div>
       </section>
 
