@@ -87,7 +87,7 @@ const ProductDetail = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      {/* Breadcrumb */}
+      
       <nav className="flex items-center gap-2 text-sm text-app-text-light mb-6">
         <Link
           to="/"
