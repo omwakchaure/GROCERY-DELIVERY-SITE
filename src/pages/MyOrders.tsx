@@ -19,7 +19,8 @@ const MyOrders = () => {
   const { clearCart } = useCart();
 
   const fetchOrders = async () => {
-    setOrders(dummyDashboardOrdersData as any);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    setOrders(dummyDashboardOrdersData as unknown as Order[]);
     setLoading(false);
   };
 
@@ -34,6 +35,7 @@ const MyOrders = () => {
     } else {
       fetchOrders();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   if (loading) {
@@ -124,7 +126,7 @@ const MyOrders = () => {
 
                     <p className="text-xs text-app-text-light mt-1">
                       {currency}
-                      {order.amount}
+                      {order.total}
                     </p>
                   </div>
                 </div>
@@ -133,9 +135,9 @@ const MyOrders = () => {
                 <div className="flex items-center gap-3">
                   {order.items.slice(0, 4).map((item) => (
                     <img
-                      key={item.product._id}
-                      src={item.product.image[0]}
-                      alt={item.product.name}
+                      key={item.product}
+                      src={item.image}
+                      alt={item.name}
                       className="size-16 rounded-lg object-cover"
                     />
                   ))}
