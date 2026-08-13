@@ -165,7 +165,7 @@ const ProductDetail = () => {
               {categoryLabel}
             </p>
 
-            {/* Product Name */}
+           
             <h1 className="text-3xl md:text-4xl font-semibold text-app-text mb-4">
               {product.name}
             </h1>
