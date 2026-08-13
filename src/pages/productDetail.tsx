@@ -5,6 +5,7 @@ import type { Product } from "../types";
 import { dummyProducts } from "../assets/assets";
 import {
   ArrowLeftIcon,
+  ArrowRightIcon,
   HomeIcon,
   LeafIcon,
   MinusIcon,
@@ -12,6 +13,8 @@ import {
   ShoppingCartIcon,
 } from "lucide-react";
 import Loading from "../components/Loading";
+import DummyReviewsSection from "../assets/DummyReviewsSection";
+import ProductCard from "../components/ProductCard";
 
 const ProductDetail = () => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
@@ -87,7 +90,6 @@ const ProductDetail = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      
       <nav className="flex items-center gap-2 text-sm text-app-text-light mb-6">
         <Link
           to="/"
@@ -165,7 +167,6 @@ const ProductDetail = () => {
               {categoryLabel}
             </p>
 
-           
             <h1 className="text-3xl md:text-4xl font-semibold text-app-text mb-4">
               {product.name}
             </h1>
@@ -259,46 +260,34 @@ const ProductDetail = () => {
       </div>
 
       {/* Customer Reviews */}
-      <section className="mt-10">
-        <h2 className="text-xl font-semibold text-app-text mb-4">
-          Customer Reviews
-        </h2>
-
-        <div className="bg-white/50 rounded-xl p-6">
-          <p className="text-sm text-app-text-light">No reviews yet.</p>
-        </div>
-      </section>
+      {product.reviewCount > 0 && <DummyReviewsSection product={product} />}
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold text-app-text mb-6">
-            Related Products
-          </h2>
+        <section className="mt-12 mb-44">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-semibold text-app-gray">
+                Related Products
+              </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {relatedProducts.slice(0, 4).map((relatedProduct) => (
-              <Link
-                key={relatedProduct._id}
-                to={`/products/${relatedProduct._id}`}
-                className="bg-white rounded-xl p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="h-40 flex items-center justify-center mb-4">
-                  <img
-                    src={relatedProduct.image}
-                    alt={relatedProduct.name}
-                    className="max-h-full w-auto object-contain"
-                  />
-                </div>
+              <p className="text-sm text-app-text-light mt-1">
+                More from {categoryLabel}
+              </p>
+            </div>
 
-                <h3 className="font-medium text-app-text truncate">
-                  {relatedProduct.name}
-                </h3>
+            <Link
+              className="text-sm font-semibold text-app-orange hover:text-app-orange-dark flex items-center gap-1 transition-colors"
+              to={`/products?category=${product.category}`}
+            >
+              View All
+              <ArrowRightIcon className="size-4" />
+            </Link>
+          </div>
 
-                <p className="text-sm text-app-text-light capitalize mt-1">
-                  {relatedProduct.category.replace(/-/g, " ")}
-                </p>
-              </Link>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 xl:gap-8">
+            {relatedProducts.slice(0, 5).map((rp) => (
+              <ProductCard key={rp._id} product={rp} />
             ))}
           </div>
         </section>
