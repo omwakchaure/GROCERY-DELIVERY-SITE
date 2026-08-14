@@ -131,7 +131,7 @@ const MyOrders = () => {
                   </div>
                 </div>
 
-                {/* Item thumbnails */}
+          
                 <div className="flex items-center gap-3">
                   {order.items.slice(0, 4).map((item) => (
                     <img
