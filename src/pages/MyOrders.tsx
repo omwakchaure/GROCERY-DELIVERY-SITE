@@ -4,7 +4,11 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { dummyDashboardOrdersData } from "../assets/assets";
 import Loading from "../components/Loading";
-import { CalendarIcon, PackageIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  PackageIcon,
+  ChevronRightIcon,
+} from "lucide-react";
 
 const MyOrders = () => {
   const currency = import.meta.env.VITE_CURRENCY_SYMBOL || "$";
@@ -18,8 +22,15 @@ const MyOrders = () => {
 
   const { clearCart } = useCart();
 
+  const statusColors: Record<string, string> = {
+    Placed: "bg-blue-100 text-blue-700",
+    "Out for Delivery": "bg-yellow-100 text-yellow-700",
+    Delivered: "bg-green-100 text-green-700",
+  };
+
   const fetchOrders = async () => {
     await new Promise((resolve) => setTimeout(resolve, 300));
+
     setOrders(dummyDashboardOrdersData as unknown as Order[]);
     setLoading(false);
   };
@@ -35,6 +46,7 @@ const MyOrders = () => {
     } else {
       fetchOrders();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
@@ -45,6 +57,8 @@ const MyOrders = () => {
   return (
     <div className="min-h-screen bg-app-cream mb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Heading */}
         <h1 className="text-2xl font-semibold text-app-green mb-6">
           My Orders
         </h1>
@@ -67,10 +81,7 @@ const MyOrders = () => {
         </div>
 
         {/* Orders */}
-        {/* Orders List */}
-        {loading ? (
-          <Loading />
-        ) : orders.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="text-center py-16">
             <PackageIcon className="size-16 text-app-border mx-auto mb-4" />
 
@@ -97,9 +108,10 @@ const MyOrders = () => {
                 to={`/orders/${order._id}`}
                 className="block max-w-4xl bg-white rounded-2xl p-5 hover:shadow transition-all"
               >
-                {/* order id, date & status */}
+                {/* Order ID, Date & Status */}
                 <div className="flex items-start justify-between mb-3">
-                  {/* left */}
+
+                  {/* Left */}
                   <div>
                     <p className="text-sm font-medium text-app-green">
                       Order #{order._id.slice(-8).toUpperCase()}
@@ -109,46 +121,61 @@ const MyOrders = () => {
                       <CalendarIcon className="size-3 text-app-text-light" />
 
                       <span className="text-xs text-app-text-light">
-                        {new Date(order.createdAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
+                        {new Date(order.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }
+                        )}
                       </span>
                     </div>
                   </div>
 
-                  {/* right */}
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-app-green">
+                  {/* Right */}
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-4 py-1 text-xs font-medium rounded-full ${
+                        statusColors[order.status] ||
+                        "bg-gray-100 text-gray-700"
+                      }`}
+                    >
                       {order.status}
-                    </p>
+                    </span>
 
-                    <p className="text-xs text-app-text-light mt-1">
-                      {currency}
-                      {order.total}
-                    </p>
+                    <ChevronRightIcon className="size-4 text-app-text-light" />
                   </div>
                 </div>
 
-          
-                <div className="flex items-center gap-3">
-                  {order.items.slice(0, 4).map((item) => (
+                {/* Item thumbnails */}
+                <div className="flex items-center gap-2 mb-3">
+                  {order.items.slice(0, 4).map((item, i) => (
                     <img
-                      key={item.product}
+                      key={i}
                       src={item.image}
                       alt={item.name}
-                      className="size-16 rounded-lg object-cover"
+                      className="size-12 sm:size-16 rounded-lg object-cover border border-app-border"
                     />
                   ))}
 
                   {order.items.length > 4 && (
-                    <div className="size-16 rounded-lg bg-app-cream flex items-center justify-center">
-                      <span className="text-sm font-medium text-app-green">
-                        +{order.items.length - 4}
-                      </span>
+                    <div className="size-12 sm:size-16 rounded-lg bg-app-cream flex items-center justify-center text-xs font-semibold text-app-text-light">
+                      +{order.items.length - 4}
                     </div>
                   )}
+                </div>
+
+                {/* Total items & price */}
+                <div className="flex justify-between items-center pt-3 text-sm">
+                  <span className="text-app-text-light">
+                    {order.items.length} items
+                  </span>
+
+                  <span className="font-semibold text-app-green">
+                    {currency}
+                    {order.total.toFixed(2)}
+                  </span>
                 </div>
               </Link>
             ))}
